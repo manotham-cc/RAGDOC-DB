@@ -21,7 +21,6 @@ def get_db_connection():
       host=os.getenv("POSTGRES_HOST"),
       port=os.getenv("POSTGRES_PORT"),
     )
-    print("Database connection established.")
     return conn
   except psycopg2.Error as e:
     print(f"Error connecting to the database: {e}")

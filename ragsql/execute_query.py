@@ -11,7 +11,6 @@ def execute_sql_query(user_question: str):
         conn = get_db_connection()
         cursor = conn.cursor()
         sql_query = question_to_sql(user_question)
-        print("Generated SQL Query:", sql_query)
         cursor.execute(sql_query)
         results = cursor.fetchall()
         return results , sql_query
