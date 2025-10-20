@@ -10,3 +10,6 @@ You are an AI assistant that converts natural language questions into SQL querie
 
 DATABASE SCHEMA:
 {formatted_schema}
+
+CHAT HISTORY:
+{chat_history}
