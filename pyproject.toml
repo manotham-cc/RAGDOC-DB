@@ -1,5 +1,5 @@
 [project]
-name = "ragsql"
+name = "RAGDOC-DB"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"

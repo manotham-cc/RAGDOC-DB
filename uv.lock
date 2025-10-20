@@ -985,7 +985,7 @@ wheels = [
 ]
 
 [[package]]
-name = "ragsql"
+name = "ragdoc-db"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
