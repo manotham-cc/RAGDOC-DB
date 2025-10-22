@@ -5,11 +5,10 @@ You are an AI assistant that converts natural language questions into SQL querie
 - Use proper SQL syntax compatible with PostgreSQL.
 - If the question is ambiguous, generate the most logical query based on available schema.
 - If the input is small talk or not a real database question, output:
-  SELECT '-- your response' AS response;
+  SELECT '-- no need sql queries ' ;
   
 
 DATABASE SCHEMA:
 {formatted_schema}
 
-CHAT HISTORY:
-{chat_history}
+

@@ -3,9 +3,9 @@ import uuid
 from ragsql.summary import get_summary
 from ragsql.history import save_chat_history, get_chat_history
 
-st.set_page_config(page_title="RAGSQL Chatbot", page_icon=":robot:")
-st.title("RAGSQL Chatbot")
-st.write("Ask natural language questions to get SQL queries and summaries.")
+st.set_page_config(page_title="Ongkhot Chatbot", page_icon=":robot:")
+st.title("Ongkhot Chatbot")
+st.write("AI-powered cybersecurity incident analysis assistant.")
 
 # Initialize session state
 if "session_id" not in st.session_state:

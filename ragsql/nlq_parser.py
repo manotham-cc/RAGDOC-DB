@@ -13,14 +13,9 @@ def question_to_sql(session_id: str, user_question: str) -> str:
     schema = get_database_schema()
     formatted_schema = format_schema(schema)
     prompt_template = load_prompt_template("prompt_templates/nl2sql_prompt.txt")
-
-    # Retrieve and format the chat history
-    history = get_chat_history(session_id)
-    formatted_history = "\n".join([f"User: {q}\nAI: {a}" for q, a in history])
-
+    
     final_prompt = prompt_template.format(
-        formatted_schema=formatted_schema,
-        chat_history=formatted_history
+        formatted_schema=formatted_schema
     )
 
     sql_query = get_llm_response(final_prompt, user_question)
