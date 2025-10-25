@@ -24,7 +24,7 @@ def test_format_schema():
 
 from unittest.mock import patch
 from ragsql.nlq_parser import question_to_sql
-from ragsql.summary import get_summary
+from ragsql.sql_rag_summary import get_summary
 
 @patch('ragsql.nlq_parser.get_database_schema')
 @patch('ragsql.nlq_parser.get_llm_response')

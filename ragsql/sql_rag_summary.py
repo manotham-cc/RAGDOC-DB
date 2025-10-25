@@ -5,7 +5,7 @@ from ragsql.execute_query import execute_sql_query
 from ragsql.llm import get_llm_response
 from ragsql.history import get_chat_history
 
-def get_summary(session_id: str, user_question: str) -> tuple[str, str]:
+def get_sql_rag(session_id: str, user_question: str) -> tuple[str, str]:
     """
     Generates a user-friendly summary of a SQL query result.
 
@@ -16,7 +16,7 @@ def get_summary(session_id: str, user_question: str) -> tuple[str, str]:
     Returns:
         A tuple containing the summary and the generated SQL query.
     """
-    summary_prompt_template = load_prompt_template("prompt_templates/summary_prompt.txt")
+    summary_prompt_template = load_prompt_template("prompt_templates/sql_rag_prompt.txt")
     results, sql_query = execute_sql_query(session_id, user_question)
 
     # Retrieve and format the chat history
@@ -37,5 +37,5 @@ def get_summary(session_id: str, user_question: str) -> tuple[str, str]:
 if __name__ == "__main__":  
     user_question = "List all high-severity cybersecurity incidents"
     print("==================================================")
-    response = get_summary(user_question)
+    response = get_sql_rag(user_question)
     print(response)

@@ -1,6 +1,6 @@
 import streamlit as st
 import uuid
-from ragsql.summary import get_summary
+from ragsql.sql_rag_summary import get_sql_rag
 from ragsql.history import save_chat_history, get_chat_history
 
 st.set_page_config(page_title="Ongkhot Chatbot", page_icon=":robot:")
@@ -31,7 +31,7 @@ if prompt := st.chat_input("Your question:"):
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             try:
-                ai_summary, sql_query = get_summary(st.session_state.session_id, prompt)
+                ai_summary, sql_query = get_sql_rag(st.session_state.session_id, prompt)
                 st.markdown(ai_summary)
                 with st.expander("Generated SQL Query"):
                     st.code(sql_query, language="sql")

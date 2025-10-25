@@ -1,7 +1,8 @@
 """This module is the main entry point for the RAGSQL application."""
 
 import uuid
-from ragsql.summary import get_summary
+from ragsql.sql_rag_summary import get_sql_rag
+from ragdoc.doc_rag_summary import generate_answer
 from ragsql.history import save_chat_history
 
 def main():
@@ -17,7 +18,7 @@ def main():
             if not question:
                 continue
 
-            response, sql = get_summary(session_id, question)
+            response, sql = get_sql_rag(session_id, question)
             print("\n--- USER-FACING SUMMARY ---\n")
             print(response)
             print("\n--- GENERATED SQL ---\n")

@@ -1,79 +1,115 @@
-# GEMINI.md
+# Project Overview
 
-## Project Overview
+This project is a Python-based application that uses a Retrieval-Augmented Generation (RAG) approach to convert natural language questions into SQL queries. It provides both a command-line interface (CLI) and a web-based chatbot interface using Streamlit.
 
-This project, `ragsql`, is a Python-based application that leverages Retrieval-Augmented Generation (RAG) to convert natural language questions into SQL queries. It is designed to interact with a PostgreSQL database, execute the generated queries, and provide a user-friendly summary of the results, with a focus on cybersecurity-related data. The application uses the OpenAI API through `openrouter.ai` for its natural language processing capabilities.
+The application is designed to answer questions about a database of cybersecurity incidents. It takes a user's question in natural language, uses a Large Language Model (LLM) to generate a corresponding SQL query, executes the query against a PostgreSQL database, and then provides a user-friendly summary of the results.
 
-**New Feature: Chat History**
+## Key Technologies
 
-To improve user experience and provide conversational context, the application now includes a chat history feature. Previous interactions within a session are stored in a dedicated PostgreSQL database and used to inform subsequent AI responses.
+*   **Backend:** Python
+*   **Frontend (Web):** Streamlit
+*   **Database:** PostgreSQL with pgvector for similarity search
+*   **LLM Integration:** OpenAI API (via OpenRouter)
+*   **Embeddings:** Sentence-Transformers
+*   **Core Libraries:**
+    *   `psycopg2-binary`: PostgreSQL adapter for Python
+    *   `pgvector`: Vector similarity search in PostgreSQL
+    *   `sentence-transformers`, `transformers`, `torch`: For creating embeddings
+    *   `openai`: OpenAI API client
+    *   `streamlit`: For the web-based UI
+    *   `python-dotenv`: For managing environment variables
 
-The core technologies used are:
-- Python 3.11+
-- PostgreSQL (two instances: one for application data, one for chat history)
-- Docker
-- OpenAI API
+## Architecture
+
+The application is structured into three main parts:
+
+1.  **`ragsql`:** This is the core logic for the natural language to SQL functionality. It contains modules for:
+    *   **Configuration (`config.py`):** Manages database connections and API keys.
+    *   **Database Schema Loading (`schema_loader.py`):** Retrieves the database schema and formats it for the LLM.
+    *   **LLM Interaction (`llm.py`):** Handles communication with the LLM.
+    *   **Natural Language to SQL (`nlq_parser.py`):** Parses the user's question and, with the help of the LLM, generates a SQL query.
+    *   **Query Execution (`execute_query.py`):** Executes the generated SQL query.
+    *   **Summarization (`summary.py`):** Generates a user-friendly summary of the query results.
+    *   **Chat History (`history.py`):** Saves and retrieves chat history.
+
+2.  **`ragdoc`:** This directory contains the logic for the document-based Retrieval-Augmented Generation (RAG) functionality. It is used for answering questions based on a document.
+    *   **`build_index.py`:** This script reads a document, splits it into chunks, generates embeddings for each chunk, and stores them in a vector database.
+    *   **`retriveval.py`:** This script takes a user's query, retrieves relevant document chunks from the vector database, and uses an LLM to generate an answer.
+
+3.  **Interfaces:**
+    *   **`main.py`:** A command-line interface (CLI) for interacting with the `ragsql` functionality.
+    *   **`streamlit_app.py`:** A web-based chatbot interface built with Streamlit that uses the `ragsql` functionality.
 
 ## Building and Running
 
-To build and run this project, follow these steps:
+### Prerequisites
 
-1.  **Start the databases:**
-    Use Docker Compose to start both the application database and the chat history database services.
+*   Python 3.x
+*   PostgreSQL database
+*   An OpenAI API key (or an API key for a compatible service like OpenRouter)
 
+### Installation
+
+1.  **Clone the repository:**
     ```bash
-    docker-compose up -d
+    git clone <repository-url>
+    cd <repository-name>
     ```
 
-2.  **Install dependencies:**
-    The project's Python dependencies are listed in `pyproject.toml`. You can install them using `uv`.
-
+2.  **Install the required Python packages:**
     ```bash
-    uv pip install -r requirements.txt 
+    pip install -r requirements.txt
     ```
 
-3.  **Set up environment variables:**
-    Create a `.env` file in the root of the project and add the following environment variables. These are used to connect to the databases and the OpenAI API.
-
+3.  **Set up the environment variables:**
+    Create a `.env` file in the root of the project and add the following variables:
     ```
-    OPENROUTER_API_KEY=<your_openrouter_api_key>
-    POSTGRES_DB=ragsql_db
-    POSTGRES_USER=ragsql_user
-    POSTGRES_PASSWORD=ragsql_pass
-    POSTGRES_HOST=localhost
-    POSTGRES_PORT=5432
+    OPENROUTER_API_KEY=<your-openrouter-api-key>
+    POSTGRES_DB=<your-database-name>
+    POSTGRES_USER=<your-database-user>
+    POSTGRES_PASSWORD=<your-database-password>
+    POSTGRES_HOST=<your-database-host>
+    POSTGRES_PORT=<your-database-port>
+    POSTGRES_DB_CHAT=<your-chat-history-database-name>
+    POSTGRES_USER_CHAT=<your-chat-history-database-user>
+    POSTGRES_PASSWORD_CHAT=<your-chat-history-database-password>
+    POSTGRES_HOST_CHAT=<your-chat-history-database-host>
+    POSTGRES_PORT_CHAT=<your-chat-history-database-port>
+    POSTGRES_DB_VECTOR=<your-vector-database-name>
+    POSTGRES_USER_VECTOR=<your-vector-database-user>
+    POSTGRES_PASSWORD_VECTOR=<your-vector-database-password>
+    POSTGRES_HOST_VECTOR=<your-vector-database-host>
+    POSTGRES_PORT_VECTOR=<your-vector-database-port>
     ```
-    For the chat history database, the credentials are hardcoded in `ragsql/config.py` for simplicity in this guide, but for production, these should also be managed via environment variables.
 
-4.  **Run the application:**
-    Execute the `main.py` script to start the application. It will prompt you to enter a natural language question.
+### Building the Document Index
 
+To use the document-based question answering functionality (`ragdoc`), you first need to build an index of the documents you want to query. You can do this by running the `build_index.py` script:
+
+```bash
+python -m ragdoc.build_index
+```
+
+This script will read the `security_incident_guide.md` file, generate embeddings for its content, and store them in the vector database.
+
+### Running the Application
+
+*   **Command-Line Interface:**
     ```bash
     python main.py
     ```
 
-## Project Structure
-
--   `main.py`: The main entry point for the application. It handles user input, generates a session ID, orchestrates the process of converting a natural language question to a SQL query, summarizes the result, and saves the chat history.
--   `docker-compose.yml`: Defines both the application's PostgreSQL database service (`db`) and the separate chat history database service (`chat_history_db`).
--   `init-history-db.sql`: SQL script to initialize the `chat_history` table in the `chat_history_db` service.
--   `pyproject.toml`: The project's configuration file, specifying dependencies and other metadata.
--   `prompt_templates/`: This directory contains the text files for the prompts used to interact with the language model.
-    -   `nl2sql_prompt.txt`: The prompt for converting natural language to SQL, now including chat history context.
-    -   `summary_prompt.txt`: The prompt for generating a user-friendly summary of the query results, now including chat history context.
--   `ragsql/`: The main Python package containing the application's core logic.
-    -   `config.py`: Handles the configuration for both the application database and the chat history database connections, as well as the OpenAI API client.
-    -   `schema_loader.py`: Connects to the application database to retrieve the schema and sample data, which are used to provide context to the language model.
-    -   `nlq_parser.py`: Responsible for converting the natural language question into a SQL query by interacting with the language model, using chat history for context.
-    -   `execute_query.py`: Executes the generated SQL query against the application database.
-    -   `summary.py`: Takes the query results and generates a user-friendly summary using the language model, also leveraging chat history for context.
-    -   `history.py`: New module to handle saving and retrieving chat history from the dedicated `chat_history_db`.
-    -   `llm.py`: Reusable module for interacting with the language model.
-    -   `utils/`: A sub-package for utility functions.
+*   **Web Interface:**
+    ```bash
+    streamlit run streamlit_app.py
+    ```
 
 ## Development Conventions
 
--   **Configuration:** All configuration is managed through environment variables, loaded using `dotenv`. This includes database credentials and API keys. Note that chat history database credentials are hardcoded in `ragsql/config.py` for this guide.
--   **Modularity:** The application is well-structured, with clear separation of concerns. Each module in the `ragsql` package has a specific responsibility.
--   **Prompts:** The use of separate text files for prompts makes it easy to modify the behavior of the language model without changing the Python code.
--   **Extensibility:** To add support for a new type of data or a different database, you would primarily need to update the `schema_loader.py` to handle the new schema and potentially adjust the prompts in the `prompt_templates` directory.
+*   **Code Style:** The code follows standard Python conventions (PEP 8).
+*   **Testing:** The project includes a `tests` directory, suggesting that it uses `pytest` for testing. To run the tests, you would typically use the following command:
+    ```bash
+    pytest
+    ```
+*   **Modularity:** The code is organized into modules with specific responsibilities, which makes it easier to understand and maintain.
+*   **Environment Variables:** The use of `python-dotenv` for managing configuration is a good practice for keeping sensitive information out of the codebase.
