@@ -1,7 +1,7 @@
 """This module converts a natural language question to a SQL query."""
 
 from ragsql.schema_loader import get_database_schema, format_schema
-from ragsql.utils.load_prompt_txt import load_prompt_template
+from utils.load_prompt_txt import load_prompt_template
 from ragsql.llm import get_llm_response
 
 

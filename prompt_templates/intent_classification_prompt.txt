@@ -1,0 +1,4 @@
+This is user_question:{user_question} You are classification model ,your task is classified intent in 3 ways:
+1.if user_question want infomation in database your response should be "sql" 
+2.if user_question want some kind of "how to prevent" or somthing about document your response should be "doc"
+3.if user_question ambiguous your response can be "sql"

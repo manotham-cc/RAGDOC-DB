@@ -3,7 +3,7 @@
 
 from ragsql.config import get_chat_history_db_connection
 
-def save_chat_history(session_id: str, user_question: str, sql_query: str, ai_summary: str):
+def save_chat_history(session_id: str, user_question: str, context: str, ai_summary: str):
     """Saves a chat interaction to the database."""
     conn = get_chat_history_db_connection()
     if conn is None:
@@ -16,7 +16,7 @@ def save_chat_history(session_id: str, user_question: str, sql_query: str, ai_su
                 INSERT INTO chat_history (session_id, user_question, sql_query, ai_summary)
                 VALUES (%s, %s, %s, %s)
                 """,
-                (session_id, user_question, sql_query, ai_summary),
+                (session_id, user_question, context, ai_summary),
             )
             conn.commit()
     except Exception as e:

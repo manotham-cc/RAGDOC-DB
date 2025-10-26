@@ -1,7 +1,8 @@
 from sentence_transformers import SentenceTransformer
 from ragsql.config import get_chat_vector_db_connection
-from ragsql.utils.load_prompt_txt import load_prompt_template
+from utils.load_prompt_txt import load_prompt_template
 from ragsql.llm import get_llm_response
+from ragsql.history import get_chat_history
 import os
 # ==========================
 # CONFIG
@@ -39,22 +40,26 @@ def retrieve_relevant_context(query, top_k=3):
 # ==========================
 # GENERATE ANSWER (LLM CALL)
 # ==========================
-def generate_answer(query):
-    context = retrieve_relevant_context(query)
+def get_doc_rag(session_id , user_question):
+    context = retrieve_relevant_context(user_question)
     prompt = load_prompt_template("prompt_templates/doc_rag_prompt.txt")
+    history = get_chat_history(session_id)
+    formatted_history = "\n".join([f"User: {q}\nAI: {a}" for q, a in history])
     final_prompt = prompt.format(
-        user_question=query,
-        Context_Retrieved="\n---\n".join(context)
+        user_question=user_question,
+        Context_Retrieved="\n---\n".join(context),
+        chat_history=formatted_history
     )
-    respone = get_llm_response(final_prompt, query)
-    return respone 
+
+    respone = get_llm_response(final_prompt, user_question)
+    return respone ,context
 
 # ==========================
 # TEST
 # ==========================
 if __name__ == "__main__":
-    query = "How to prevent SQL breach?"
-    answer = generate_answer(query)
+    user_question = "How to prevent SQL breach?"
+    answer = get_doc_rag(user_question)
     print("\n=== ANSWER ===\n")
     print(answer)
 

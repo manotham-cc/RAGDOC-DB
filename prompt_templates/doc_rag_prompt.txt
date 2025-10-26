@@ -3,4 +3,4 @@ Your output must go beyond summarization — it should include specific recommen
 Placeholders available:
 - {user_question}     : the original user question
 - {Context_Retrieved} : the Context Retrieved from Document
-
+- {chat_history}      : the previos conversation user question

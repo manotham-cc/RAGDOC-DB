@@ -1,6 +1,6 @@
 """This module generates a user-friendly summary of a SQL query result."""
 
-from ragsql.utils.load_prompt_txt import load_prompt_template
+from utils.load_prompt_txt import load_prompt_template
 from ragsql.execute_query import execute_sql_query
 from ragsql.llm import get_llm_response
 from ragsql.history import get_chat_history

@@ -1,0 +1,42 @@
+ragdoc-db
+├── GEMINI.md
+├── IMPROVEMENTS.md
+├── LICENSE
+├── README.md
+├── docker-compose.yml
+├── init-history-db.sql
+├── main.py
+├── path.py
+├── project_structure.txt
+├── prompt_templates
+│   ├── doc_rag_prompt.txt
+│   ├── nl2sql_prompt.txt
+│   └── sql_rag_prompt.txt
+├── ragdoc
+│   ├── build_index.py
+│   └── doc_rag_summary.py
+├── ragsql
+│   ├── __init__.py
+│   ├── config.py
+│   ├── execute_query.py
+│   ├── history.py
+│   ├── llm.py
+│   ├── nlq_parser.py
+│   ├── schema_loader.py
+│   ├── sql_rag_summary.py
+│   └── utils
+│       ├── __init__.py
+│       ├── gen_data.py
+│       └── load_prompt_txt.py
+├── requirement.txt
+├── security_incident_guide.md
+├── spec_feature
+│   ├── CHAT_HISTORY.md
+│   └── STREAMLIT_UI_PLAN.md
+├── streamlit_app.py
+└── tests
+    ├── __init__.py
+    ├── test_integration.py
+    └── test_unit.py
+
+7 directories, 33 files

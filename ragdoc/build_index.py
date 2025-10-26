@@ -3,7 +3,6 @@ import psycopg2
 from psycopg2.extras import execute_values
 from sentence_transformers import SentenceTransformer
 from ragsql.config import get_chat_vector_db_connection
-from ragsql.llm import get_llm_response
 
 # ==========================
 # CONFIG
