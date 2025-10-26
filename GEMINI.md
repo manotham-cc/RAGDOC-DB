@@ -21,7 +21,7 @@ The application is designed to answer questions about a database of cybersecurit
 
 ## Architecture
 
-The application is structured into three main parts:
+The application is structured into several parts:
 
 1.  **`ragsql`:** This is the core logic for the natural language to SQL functionality. It contains modules for:
     *   **Configuration (`config.py`):** Manages database connections and API keys.
@@ -29,14 +29,25 @@ The application is structured into three main parts:
     *   **LLM Interaction (`llm.py`):** Handles communication with the LLM.
     *   **Natural Language to SQL (`nlq_parser.py`):** Parses the user's question and, with the help of the LLM, generates a SQL query.
     *   **Query Execution (`execute_query.py`):** Executes the generated SQL query.
-    *   **Summarization (`summary.py`):** Generates a user-friendly summary of the query results.
+    *   **Summarization (`sql_rag_summary.py`):** Generates a user-friendly summary of the query results.
     *   **Chat History (`history.py`):** Saves and retrieves chat history.
 
 2.  **`ragdoc`:** This directory contains the logic for the document-based Retrieval-Augmented Generation (RAG) functionality. It is used for answering questions based on a document.
     *   **`build_index.py`:** This script reads a document, splits it into chunks, generates embeddings for each chunk, and stores them in a vector database.
-    *   **`retriveval.py`:** This script takes a user's query, retrieves relevant document chunks from the vector database, and uses an LLM to generate an answer.
+    *   **`doc_rag_summary.py`:** This script takes a user's query, retrieves relevant document chunks from the vector database, and uses an LLM to generate an answer.
 
-3.  **Interfaces:**
+3.  **`handlers`:** This directory contains the handlers for the different RAG functionalities.
+    *   **`doc_handler.py`:** Handles the document-based RAG.
+    *   **`sql_handler.py`:** Handles the SQL-based RAG.
+
+4.  **`utils`:** This directory contains utility functions used across the application.
+    *   **`gen_data.py`:** Generates data for the database.
+    *   **`intent.py`:**  Handles intent classification.
+    *   **`load_prompt_txt.py`:** Loads prompt templates from text files.
+
+5.  **`prompt_templates`:** This directory contains the prompt templates used by the LLM.
+
+6.  **Interfaces:**
     *   **`main.py`:** A command-line interface (CLI) for interacting with the `ragsql` functionality.
     *   **`streamlit_app.py`:** A web-based chatbot interface built with Streamlit that uses the `ragsql` functionality.
 
