@@ -1,0 +1,27 @@
+# AI Provider
+OPENROUTER_API_KEY=your_api_key_here
+
+# Main Database
+DB_NAME=ragsql_db
+DB_USER=ragsql_user
+DB_PASSWORD=ragsql_pass
+DB_HOST=localhost
+DB_PORT=5432
+
+# Chat History Database
+CHAT_HISTORY_NAME=history_db
+CHAT_HISTORY_USER=history_user
+CHAT_HISTORY_PASSWORD=history_pass
+CHAT_HISTORY_HOST=localhost
+CHAT_HISTORY_PORT=5433
+
+# Vector Database
+VECTOR_NAME=vector_db
+VECTOR_USER=vector_user
+VECTOR_PASSWORD=vector_pass
+VECTOR_HOST=localhost
+VECTOR_PORT=5434
+
+# Paths (Optional - defaults are used if not set)
+# EMBEDDING_MODEL_PATH=/path/to/local/model
+# DOC_PATH=/path/to/document.md

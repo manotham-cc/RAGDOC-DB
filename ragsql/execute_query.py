@@ -1,7 +1,12 @@
 """This module executes a SQL query against the database."""
 
-from ragsql.config import get_db_connection
+import logging
+from core.config import get_db_connection
 from ragsql.nlq_parser import question_to_sql
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 def execute_sql_query(session_id: str, user_question: str) -> tuple[list, str]:
     """
@@ -17,13 +22,17 @@ def execute_sql_query(session_id: str, user_question: str) -> tuple[list, str]:
     conn = None
     try:
         conn = get_db_connection()
+        if not conn:
+            logger.error("Database connection failed.")
+            return "Database connection failed.", ""
+
         cursor = conn.cursor()
         sql_query = question_to_sql(session_id, user_question)
         cursor.execute(sql_query)
         results = cursor.fetchall()
         return results, sql_query
     except Exception as e:
-        print(f"Error executing NLQ query: {e}")
+        logger.error(f"Error executing NLQ query: {e}")
         return f"Error executing NLQ query: {e}", ""
     finally:
         if conn:
@@ -32,5 +41,6 @@ def execute_sql_query(session_id: str, user_question: str) -> tuple[list, str]:
 # Example usage
 if __name__ == "__main__":
     user_question = "List all high-severity cybersecurity incidents"
-    results = execute_sql_query(user_question)
+    # Note: passing dummy session_id for test
+    results = execute_sql_query("test_session", user_question)
     print(results)

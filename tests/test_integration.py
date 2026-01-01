@@ -1,8 +1,8 @@
 """Integration tests for the RAGSQL application."""
 
 import pytest
-from ragsql.config import get_db_connection
-from ragsql.llm import get_llm_response
+from core.config import get_db_connection
+from core.llm import get_llm_response
 
 # Note: These tests require a running PostgreSQL database and a valid OPENROUTER_API_KEY.
 

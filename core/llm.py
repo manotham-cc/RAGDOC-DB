@@ -1,6 +1,6 @@
 """This module provides a reusable function for interacting with the language model."""
 
-from ragsql.config import client
+from core.config import client
 
 def get_llm_response(system_prompt: str, user_message: str) -> str:
     """
@@ -15,7 +15,7 @@ def get_llm_response(system_prompt: str, user_message: str) -> str:
     """
     completion = client.chat.completions.create(
         extra_body={},
-        model="openai/gpt-oss-20b:free",
+        model="nvidia/nemotron-3-nano-30b-a3b:free",
         messages=[
             {
                 "role": "system",

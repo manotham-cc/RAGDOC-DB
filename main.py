@@ -1,35 +1,38 @@
-"""This module is the main entry point for the RAGSQL application."""
-
 import uuid
-from ragsql.summary import get_summary
-from ragsql.history import save_chat_history
+from utils.intent import classify_intent
+from handlers.doc_handler import handle_doc_rag
+from handlers.sql_handler import handle_sql_rag
 
-def main():
-    """The main function for the RAGSQL application."""
+def main() -> None:
     session_id = str(uuid.uuid4())
     print(f"Starting new chat session: {session_id}")
 
     while True:
         try:
-            question = input("Enter your natural-language question (or 'exit' to end): ")
-            if question.lower() == 'exit':
+            question = input("\nEnter your question (or 'exit' to end): ").strip()
+            if question.lower() == "exit":
                 break
             if not question:
                 continue
 
-            response, sql = get_summary(session_id, question)
-            print("\n--- USER-FACING SUMMARY ---\n")
-            print(response)
-            print("\n--- GENERATED SQL ---\n")
-            print(sql)
+            intent = classify_intent(question)
+            print(f"Identified intent: {intent}")
 
-            # Save the chat history
-            save_chat_history(session_id, question, sql, response)
+            if intent == "doc":
+                handle_doc_rag(session_id, question)
+            elif intent == "sql":
+                handle_sql_rag(session_id, question)
+            else:
+                print("Unrecognized intent. Please ask again.")
 
         except (EOFError, KeyboardInterrupt):
+            print("\nInterrupted by user.")
             break
+        except Exception as e:
+            print(f"Error: {e}")
 
     print("\nChat session ended.")
+
 
 if __name__ == "__main__":
     main()

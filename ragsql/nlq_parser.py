@@ -1,9 +1,9 @@
 """This module converts a natural language question to a SQL query."""
 
+from utils.load_prompt_txt import load_prompt_template
+from core.llm import get_llm_response
 from ragsql.schema_loader import get_database_schema, format_schema
-from ragsql.utils.load_prompt_txt import load_prompt_template
-from ragsql.llm import get_llm_response
-from ragsql.history import get_chat_history
+
 
 def question_to_sql(session_id: str, user_question: str) -> str:
     """
@@ -13,7 +13,7 @@ def question_to_sql(session_id: str, user_question: str) -> str:
     schema = get_database_schema()
     formatted_schema = format_schema(schema)
     prompt_template = load_prompt_template("prompt_templates/nl2sql_prompt.txt")
-    
+
     final_prompt = prompt_template.format(
         formatted_schema=formatted_schema
     )
