@@ -1,5 +1,5 @@
 from ragsql.sql_rag_summary import get_sql_rag
-from ragsql.history import save_chat_history
+from core.history import save_chat_history
 
 def handle_sql_rag(session_id: str, question: str) -> None:
     response, sql_query = get_sql_rag(session_id,question)

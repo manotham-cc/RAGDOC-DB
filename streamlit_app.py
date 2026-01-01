@@ -3,7 +3,7 @@ import uuid
 from utils.intent import classify_intent
 from ragsql.sql_rag_summary import get_sql_rag
 from ragdoc.doc_rag_summary import get_doc_rag
-from ragsql.history import save_chat_history, get_chat_history
+from core.history import save_chat_history, get_chat_history
 
 st.set_page_config(page_title="Ongkhot Chatbot", page_icon=":robot:")
 st.title("Ongkhot Chatbot")

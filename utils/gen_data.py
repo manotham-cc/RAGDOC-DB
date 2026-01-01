@@ -1,4 +1,4 @@
-from ragsql.config import get_db_connection
+from core.config import get_db_connection
 
 def init_cybersecurity_table():
     conn = get_db_connection()

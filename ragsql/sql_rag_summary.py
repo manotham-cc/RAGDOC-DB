@@ -1,9 +1,9 @@
 """This module generates a user-friendly summary of a SQL query result."""
 
-from utils.load_prompt_txt import load_prompt_template
 from ragsql.execute_query import execute_sql_query
-from ragsql.llm import get_llm_response
-from ragsql.history import get_chat_history
+from utils.load_prompt_txt import load_prompt_template
+from core.llm import get_llm_response
+from core.history import get_chat_history
 
 def get_sql_rag(session_id: str, user_question: str) -> tuple[str, str]:
     """

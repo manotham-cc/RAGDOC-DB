@@ -1,5 +1,5 @@
 from ragdoc.doc_rag_summary import get_doc_rag
-from ragsql.history import save_chat_history
+from core.history import save_chat_history
 
 def handle_doc_rag(session_id: str, question: str) -> None:
     response, context = get_doc_rag(session_id,question)

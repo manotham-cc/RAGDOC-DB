@@ -1,126 +1,108 @@
-# Project Overview
+# Ongkhot Chatbot (Multi-Source RAG)
 
-This project is a Python-based application that uses a Retrieval-Augmented Generation (RAG) approach to convert natural language questions into SQL queries. It provides both a command-line interface (CLI) and a web-based chatbot interface using Streamlit.
+**Project Type:** Python Application (CLI & Streamlit)
 
-The application is designed to answer questions about a database of cybersecurity incidents. It takes a user's question in natural language, uses a Large Language Model (LLM) to generate a corresponding SQL query, executes the query against a PostgreSQL database, and then provides a user-friendly summary of the results.
+## Project Overview
 
-## Key Technologies
+Ongkhot Chatbot is an AI-powered cybersecurity incident analysis assistant. It utilizes a Multi-Source Retrieval-Augmented Generation (RAG) architecture to answer user queries by retrieving information from two distinct sources:
+1.  **SQL Database:** Structured data queried via generated SQL.
+2.  **Documents:** Unstructured text (e.g., security guides) retrieved via vector similarity search.
 
-*   **Backend:** Python
-*   **Frontend (Web):** Streamlit
-*   **Database:** PostgreSQL with pgvector for similarity search
-*   **LLM Integration:** OpenAI API (via OpenRouter)
-*   **Embeddings:** Sentence-Transformers
-*   **Core Libraries:**
-    *   `psycopg2-binary`: PostgreSQL adapter for Python
-    *   `pgvector`: Vector similarity search in PostgreSQL
-    *   `sentence-transformers`, `transformers`, `torch`: For creating embeddings
-    *   `openai`: OpenAI API client
-    *   `streamlit`: For the web-based UI
-    *   `python-dotenv`: For managing environment variables
+The system uses an intent classification step to route queries to the appropriate handler (`doc` or `sql`).
 
 ## Architecture
 
-The application is structured into several parts:
+*   **Frontend:**
+    *   `streamlit_app.py`: Web interface powered by Streamlit.
+    *   `main.py`: Interactive Command Line Interface.
+*   **Core Logic:**
+    *   `utils/intent.py`: Classifies user queries into `sql` or `doc` intents.
+    *   `ragsql/`: Handles SQL generation, execution, and summarization.
+    *   `ragdoc/`: Handles document embedding, retrieval, and summarization.
+*   **Data Storage:**
+    *   **PostgreSQL**: Used for structured data, chat history, and vector storage (`pgvector`).
+    *   **Vectors**: Embeddings generated using `sentence-transformers` (`intfloat/multilingual-e5-large-instruct`).
 
-1.  **`ragsql`:** This is the core logic for the natural language to SQL functionality. It contains modules for:
-    *   **Configuration (`config.py`):** Manages database connections and API keys.
-    *   **Database Schema Loading (`schema_loader.py`):** Retrieves the database schema and formats it for the LLM.
-    *   **LLM Interaction (`llm.py`):** Handles communication with the LLM.
-    *   **Natural Language to SQL (`nlq_parser.py`):** Parses the user's question and, with the help of the LLM, generates a SQL query.
-    *   **Query Execution (`execute_query.py`):** Executes the generated SQL query.
-    *   **Summarization (`sql_rag_summary.py`):** Generates a user-friendly summary of the query results.
-    *   **Chat History (`history.py`):** Saves and retrieves chat history.
+## Setup & Installation
 
-2.  **`ragdoc`:** This directory contains the logic for the document-based Retrieval-Augmented Generation (RAG) functionality. It is used for answering questions based on a document.
-    *   **`build_index.py`:** This script reads a document, splits it into chunks, generates embeddings for each chunk, and stores them in a vector database.
-    *   **`doc_rag_summary.py`:** This script takes a user's query, retrieves relevant document chunks from the vector database, and uses an LLM to generate an answer.
+### 1. Prerequisites
+*   Python 3.10+ (Check `.python-version` if available)
+*   Docker & Docker Compose (for database services)
 
-3.  **`handlers`:** This directory contains the handlers for the different RAG functionalities.
-    *   **`doc_handler.py`:** Handles the document-based RAG.
-    *   **`sql_handler.py`:** Handles the SQL-based RAG.
+### 2. Environment Variables
+Create a `.env` file in the root directory. Based on `ragsql/config.py`, you need the following:
 
-4.  **`utils`:** This directory contains utility functions used across the application.
-    *   **`gen_data.py`:** Generates data for the database.
-    *   **`intent.py`:**  Handles intent classification.
-    *   **`load_prompt_txt.py`:** Loads prompt templates from text files.
+```env
+# AI Provider
+OPENROUTER_API_KEY=your_api_key_here
 
-5.  **`prompt_templates`:** This directory contains the prompt templates used by the LLM.
+# Main Database
+DB_NAME=...
+DB_USER=...
+DB_PASSWORD=...
+DB_HOST=...
+DB_PORT=...
 
-6.  **Interfaces:**
-    *   **`main.py`:** A command-line interface (CLI) for interacting with the `ragsql` functionality.
-    *   **`streamlit_app.py`:** A web-based chatbot interface built with Streamlit that uses the `ragsql` functionality.
+# Chat History Database
+CHAT_HISTORY_NAME=...
+CHAT_HISTORY_USER=...
+CHAT_HISTORY_PASSWORD=...
+CHAT_HISTORY_HOST=...
+CHAT_HISTORY_PORT=...
 
-## Building and Running
-
-### Prerequisites
-
-*   Python 3.x
-*   PostgreSQL database
-*   An OpenAI API key (or an API key for a compatible service like OpenRouter)
-
-### Installation
-
-1.  **Clone the repository:**
-    ```bash
-    git clone <repository-url>
-    cd <repository-name>
-    ```
-
-2.  **Install the required Python packages:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-3.  **Set up the environment variables:**
-    Create a `.env` file in the root of the project and add the following variables:
-    ```
-    OPENROUTER_API_KEY=<your-openrouter-api-key>
-    POSTGRES_DB=<your-database-name>
-    POSTGRES_USER=<your-database-user>
-    POSTGRES_PASSWORD=<your-database-password>
-    POSTGRES_HOST=<your-database-host>
-    POSTGRES_PORT=<your-database-port>
-    POSTGRES_DB_CHAT=<your-chat-history-database-name>
-    POSTGRES_USER_CHAT=<your-chat-history-database-user>
-    POSTGRES_PASSWORD_CHAT=<your-chat-history-database-password>
-    POSTGRES_HOST_CHAT=<your-chat-history-database-host>
-    POSTGRES_PORT_CHAT=<your-chat-history-database-port>
-    POSTGRES_DB_VECTOR=<your-vector-database-name>
-    POSTGRES_USER_VECTOR=<your-vector-database-user>
-    POSTGRES_PASSWORD_VECTOR=<your-vector-database-password>
-    POSTGRES_HOST_VECTOR=<your-vector-database-host>
-    POSTGRES_PORT_VECTOR=<your-vector-database-port>
-    ```
-
-### Building the Document Index
-
-To use the document-based question answering functionality (`ragdoc`), you first need to build an index of the documents you want to query. You can do this by running the `build_index.py` script:
-
-```bash
-python -m ragdoc.build_index
+# Vector Database (pgvector)
+VECTOR_NAME=...
+VECTOR_USER=...
+VECTOR_PASSWORD=...
+VECTOR_HOST=...
+VECTOR_PORT=...
 ```
 
-This script will read the `security_incident_guide.md` file, generate embeddings for its content, and store them in the vector database.
+### 3. Installation
+```bash
+# Create and activate virtual environment
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# Linux/Mac
+source .venv/bin/activate
 
-### Running the Application
+# Install dependencies
+pip install -r requirement.txt
+```
 
-*   **Command-Line Interface:**
+## Running the Application
+
+### Start Databases
+Ensure your PostgreSQL databases are running. A `docker-compose.yml` is present in the root:
+```bash
+docker-compose up -d
+```
+
+### Data Ingestion & Initialization
+The system requires both the structured database and the vector index to be populated before use.
+*   **Run Initialization Script**:
+    This script initializes the main SQL database with sample data and builds the vector index from `security_incident_guide.md`.
     ```bash
-    python main.py
+    python init_system.py
     ```
 
-*   **Web Interface:**
-    ```bash
-    streamlit run streamlit_app.py
-    ```
+### Run CLI
+```bash
+python main.py
+```
 
-## Development Conventions
+### Run Web Interface
+```bash
+streamlit run streamlit_app.py
+```
 
-*   **Code Style:** The code follows standard Python conventions (PEP 8).
-*   **Testing:** The project includes a `tests` directory, suggesting that it uses `pytest` for testing. To run the tests, you would typically use the following command:
-    ```bash
-    pytest
-    ```
-*   **Modularity:** The code is organized into modules with specific responsibilities, which makes it easier to understand and maintain.
-*   **Environment Variables:** The use of `python-dotenv` for managing configuration is a good practice for keeping sensitive information out of the codebase.
+## Project Structure Key
+*   `handlers/`: Bridges the intent classification to the specific RAG implementation.
+*   `prompt_templates/`: Text files containing prompts for the LLM (SQL generation, RAG summarization, etc.).
+*   `tests/`: Integration and unit tests. Run with `pytest`.
+*   `init-history-db.sql`: SQL script to initialize the chat history schema.
+
+## Development Notes
+*   **Embeddings**: The project uses a local embedding model path. Ensure the model is downloaded or update `ragdoc/build_index.py` to download it automatically if missing.
+*   **Database Connections**: There are three distinct connection functions in `ragsql/config.py`. Ensure all three sets of credentials are correct in your `.env`.

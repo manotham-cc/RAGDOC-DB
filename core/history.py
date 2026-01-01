@@ -1,7 +1,7 @@
 # ragsql/history.py
 """This module handles saving and retrieving chat history from the database."""
 
-from ragsql.config import get_chat_history_db_connection
+from core.config import get_chat_history_db_connection
 
 def save_chat_history(session_id: str, user_question: str, context: str, ai_summary: str):
     """Saves a chat interaction to the database."""

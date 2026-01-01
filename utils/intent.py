@@ -1,4 +1,4 @@
-from ragsql.llm import get_llm_response
+from core.llm import get_llm_response
 from utils.load_prompt_txt import load_prompt_template
 def classify_intent(question: str) -> str:
     """Classify user question into 'sql' or 'doc'."""
